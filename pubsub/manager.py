@@ -85,7 +85,6 @@ class InvalidOperation(Exception):
 #
 #
 #
-#
 class EventManager():
 
     # The column that constitutes a subscription record
@@ -326,7 +325,7 @@ class EventManager():
                          "%-30s %r \n" % \
                          (index, item.topic, str(item.event), "",\
                          item.event_handler, "", item.exception_handler)  
-            final_str +=  self.__draw_line(style='.')
+            #final_str +=  self.__draw_line(style='.')
             final_str += "\n"
         final_str += "\t\t\tS U B S C R I P T I O N   L O O K U P   T A B L E\n"
         final_str += "\t\t\t-------------------------------------------------\n"
@@ -608,70 +607,3 @@ class EventManager():
  
 # __END__
 
-   
-def func1():
-    print "this is func1"
-    pass
-
-def func2(topic, event, **kwargs):
-    print "this is func2 event: %s, topic: %s, kwargs: %s" % (topic, event, kwargs)
-    pass
-
-def func3(topic, event, **kwargs):
-    print "this is func3 event: %s, topic: %s, kwargs: %s" % (topic, event, kwargs)
-    pass
-
-def func4():
-    print "this is func4"
-    pass
-
-def func5(topic, event, **kwargs):
-    print "this is func5 event: %s, topic: %s, kwargs: %s" % (topic, event, kwargs)
-    pass
-
-def E1():
-    pass
-
-def E2():
-    pass
-
-def E3():
-    pass
-
-def E4():
-    pass
-
-def E5(e, topic, event, **kwargs):
-    pass
-
-if __name__ == '__main__':
-    em = EventManager()
-    em.subscribe(topic='topic1',    event='*',      event_handler=func1,    exception_handler=E1)
-    em.subscribe(topic='*abc1',       event='*',      event_handler=func4,    exception_handler=E1)
-    em.subscribe(                                   event_handler=func2,    exception_handler=E2)
-    em.subscribe(topic='topic2',                    event_handler=func3,    exception_handler=E3)
-    em.subscribe(topic='a*bc',       event='ServiceReStartEvent',      event_handler=func5,    exception_handler=E2)
-    em.subscribe(topic='*',         event='ServiceStopEvent',           event_handler=func2,    exception_handler=E5)
-    em.subscribe(                   event='ServiceStartEvent',          event_handler=func1,    exception_handler=E1)
-    em.subscribe(topic='t*',        event_handler=func3,    exception_handler=E3)
-    em.subscribe(topic='*1',        event_handler=func2,    exception_handler=E2)
-    em.subscribe(topic='t*1',       event_handler=func5,    exception_handler=E5)
-    em.subscribe(topic='topic1',    event='*',      event_handler=func1,    exception_handler=E1)
-    em.subscribe(topic='topic1',    event='*',      event_handler=func1,    exception_handler=E1)
-    em.unsubscribe(topic='topic1',    event='*',      event_handler=func1,    exception_handler=E1)
-    em.subscribe(topic='topic1',    event='ServiceStopEvent',      event_handler=func5,    exception_handler=E5)
-    em.subscribe(topic='Testing1',    event='*',      event_handler=func5,    exception_handler=E5)
-    em.dump_sub_table()
-    #em.unsubscribe_all(event_handler=func2)
-    em.publish(topic='topic1', event='ServiceStopEvent', var1='val1', var2='val2', var3='val3')
-    em.publish(topic='abcde', event='ServiceStartEvent', var1='val1', var2='val2', var3='val3')
-    em.dump_all_stats()
-    em1 = EventManager()
-    em1.publish(topic='abcde', event='AlarmTriggerEvent', var2='val2', var3='val3')
-    em1.publish(topic='topic1', event='AlarmTriggerEvent', var2='val2', var3='val3')
-    em1.publish(topic='topic1', event='ServiceStopEvent', var2='val2', var3='val3')
-    em1.subscribe(topic='Topic',    event='*',      event_handler=func5,    exception_handler=E5)
-    em1.dump_all_stats()
-    
-
-    print "thread done!!!!!!!"

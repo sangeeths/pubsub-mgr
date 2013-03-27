@@ -55,28 +55,51 @@ evt_len = len(__event_type)
 
 
 
-def generate_topic(n):
+def generate_topic(n, globbing=False, length=5):
     topic_list = []
     char_set = string.ascii_lowercase + string.ascii_uppercase + string.digits
-    t_len = 5
     for count in range(0, n):
-        topic_list.append(''.join(random.choice(char_set) for x in range(t_len)))
+        t = ''.join(random.choice(char_set) for x in range(length))
+        if globbing: t = t.replace(random.choice(t), '*')
+        topic_list.append(t)
     return topic_list
 
+def generate_event():
+    event_list = ['ARP*Event', 'Alarm*Event', 'DHCP*Event', 
+                  'PING*Event', 'Packet*Event', 'RARP*Event',
+                  'Schedule*Event', 'Service*Event', 'User*Event',
+                  'A*', 'D*', 'P*', 'R*', 'S*', 'U*', 'B*', '*Event', '*']
+    return event_list
+    
+
+file_header = \
+"# NOTE: this is automatically generated!\n" \
+"#       DO NOT MODIFY!!! \n\n" \
+"import logging \n" \
+"class handlers: \n"
+
+file_body = \
+"\tdef event_handler_%d(self, topic, event, **kwargs):\n" \
+"\t\tlogging.info(\"...................................................\")\n" \
+"\t\tlogging.info(\"Entering event_handler_%d\")\n" \
+"\t\tlogging.info(\"\\t[topic=%%s] [event=%%s]\" %% (topic, event))\n" \
+"\t\tlogging.info(\"\\targs=%%s\" %% kwargs)\n" \
+"\t\tlogging.info(\"...................................................\")\n" \
+"\tdef exception_handler_%d(self, e, topic, event, **kwargs):\n" \
+"\t\tlogging.info(\"...................................................\")\n" \
+"\t\tlogging.info(\"Entering exception_handler_%d\")\n" \
+"\t\tlogging.info(\"\\t[topic=%%s] [event=%%s]\" %% (topic, event))\n" \
+"\t\tlogging.info(\"\\targs=%%s\" %% kwargs)\n" \
+"\t\tlogging.info(\"\\texception=%%s\" %% e)\n" \
+"\t\tlogging.info(\"...................................................\")\n" \
 
 def generate_handler_functions(n):
     filename = "handler_functions.py"
     try:
         h_file = open(filename, 'w')
-        file_data = "class handlers: \n"
-        h_file.write(file_data) 
+        h_file.write(file_header) 
         for i in range(0, n):
-            file_data  = "\tdef event_handler_%d(self, topic, event, **kwargs):\n" \
-                "\t\tprint \"event_handler_%d: [topic=%%s] [event=%%s] args=%%s\" %% (topic, event, kwargs)\n" \
-                "\tdef exception_handler_%d(self, e, topic, event, **kwargs):\n" \
-                "\t\tprint \"exception_handler_%d: [exception=%%s] [topic=%%s] [event=%%s] args=%%s\" %% (e, topic, event, kwargs)\n" % \
-                (i, i, i, i)
-            h_file.write(file_data) 
+            h_file.write(file_body % (i, i ,i ,i)) 
     except:
         print "Unexpected error:", sys.exc_info()[0]
         raise
@@ -84,32 +107,52 @@ def generate_handler_functions(n):
         h_file.close()
 
 
-def add_subscriber(n):
-    generate_handler_functions(n)
+# r = regular subscriber
+# g = subscribers with globbing for topic and event
+def subscribe_and_publish(r, g):
+    # generate the event handler functions and 
+    # exception handler functions
+    generate_handler_functions(r)
     from handler_functions import handlers
     h = handlers()
-    topic_list = generate_topic(n)
-    for i in range(0, n):
-        eh = getattr(h, "event_handler_%d" % i)
-        exh = getattr(h, "exception_handler_%d" % i)
-        em.subscribe(topic=topic_list[i], \
-                     event=__event_type[i % evt_len], \
-                     event_handler=eh, exception_handler=exh)
-    em.subscribe(topic='a*', event='*', event_handler=h.event_handler_0, exception_handler=h.exception_handler_0)
-    a_list = [x for x in topic_list if x.startswith('a')]
-    print "a_list = %s" % a_list
-    for topic in a_list:
+    
+    if r != 0:
+        # generate a list of topics
+        topic_list = generate_topic(r, length=15)
+        for i in range(0, r):
+            eh = getattr(h, "event_handler_%d" % i)
+            exh = getattr(h, "exception_handler_%d" % i)
+            em.subscribe(topic=topic_list[i], \
+                         event=__event_type[i % evt_len], \
+                         event_handler=eh, exception_handler=exh)
+
+    if g != 0:
+        # generate a list of topics
+        g_topic_list = generate_topic(g, globbing=True, length=10)
+        g_event_list = generate_event()
+        for i in range(0, g):
+            eh = getattr(h, "event_handler_%d" % i)
+            exh = getattr(h, "exception_handler_%d" % i)
+            em.subscribe(topic=g_topic_list[i], \
+                         event=g_event_list[i % len(g_event_list)], \
+                         event_handler=eh, exception_handler=exh)
+
+    # randomly publish
+    # 
+    # publish all topic that starts with 'a' (with all events)
+    pub_list  = [x for x in topic_list if x.startswith('a')]
+    pub_list += [x for x in topic_list if x.startswith('A')]
+    pub_list += [x for x in topic_list if x.endswith('a')]
+    pub_list += [x for x in topic_list if x.endswith('A')]
+    for topic in pub_list:
         for event in __event_type:
             em.publish(topic=topic, event=event)
 
     em.dump_sub_table()
     em.dump_all_stats()
 
+
 if __name__ == '__main__':
-#    add_subscriber(1000)
-    cProfile.run("add_subscriber(1000)")
-#    topic = generate_topic(10000)
-   # print "Duplicates: ", len(set(topic))
-    #print topic
+    cProfile.run("subscribe_and_publish(50, 20)")
 
 
