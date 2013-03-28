@@ -1,0 +1,179 @@
+CONFIGURE:
+----------
+To change the volume of subscribers, change the following in tests/stress_test.py
+
+156     cProfile.run("subscribe_and_publish(50, 20)")
+                                            ^^  ^^
+                                            #1  #2
+
+#1 Regular subscribers 
+#2 Glogging subscribers; topic and event will contain wild-card character ("*")
+
+
+EXECUTE:
+--------
+
+Run the stress test as follows:
+
+$ 
+$ python stress_test.py 
+         818624 function calls (814625 primitive calls) in 1.348 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    1.348    1.348 <string>:1(<module>)
+        2    0.000    0.000    0.000    0.000 <string>:20(__repr__)
+       70    0.000    0.000    0.000    0.000 <string>:8(__new__)
+      164    0.001    0.000    0.027    0.000 __init__.py:1118(debug)
+       75    0.000    0.000    0.015    0.000 __init__.py:1130(info)
+      239    0.002    0.000    0.003    0.000 __init__.py:1205(findCaller)
+      239    0.001    0.000    0.011    0.000 __init__.py:1226(makeRecord)
+      239    0.001    0.000    0.040    0.000 __init__.py:1239(_log)
+      239    0.001    0.000    0.025    0.000 __init__.py:1260(handle)
+      239    0.001    0.000    0.024    0.000 __init__.py:1292(callHandlers)
+      239    0.000    0.000    0.000    0.000 __init__.py:1318(getEffectiveLevel)
+      239    0.000    0.000    0.001    0.000 __init__.py:1332(isEnabledFor)
+      239    0.001    0.000    0.001    0.000 __init__.py:153(getLevelName)
+       75    0.000    0.000    0.016    0.000 __init__.py:1594(info)
+      164    0.001    0.000    0.027    0.000 __init__.py:1602(debug)
+      239    0.005    0.000    0.010    0.000 __init__.py:242(__init__)
+      239    0.000    0.000    0.001    0.000 __init__.py:311(getMessage)
+      239    0.002    0.000    0.006    0.000 __init__.py:404(formatTime)
+      239    0.000    0.000    0.001    0.000 __init__.py:445(usesTime)
+      239    0.002    0.000    0.010    0.000 __init__.py:451(format)
+      478    0.000    0.000    0.000    0.000 __init__.py:598(filter)
+      239    0.000    0.000    0.002    0.000 __init__.py:692(acquire)
+      239    0.000    0.000    0.002    0.000 __init__.py:699(release)
+      239    0.000    0.000    0.010    0.000 __init__.py:712(format)
+      239    0.001    0.000    0.023    0.000 __init__.py:735(handle)
+      239    0.000    0.000    0.001    0.000 __init__.py:81(<lambda>)
+      239    0.001    0.000    0.004    0.000 __init__.py:827(flush)
+      239    0.002    0.000    0.016    0.000 __init__.py:834(emit)
+      239    0.001    0.000    0.017    0.000 __init__.py:921(emit)
+      239    0.001    0.000    0.001    0.000 genericpath.py:85(_splitext)
+        1    0.000    0.000    0.001    0.001 handler_functions.py:175(event_handler_13)
+        1    0.000    0.000    0.000    0.000 handler_functions.py:4(<module>)
+        1    0.000    0.000    0.000    0.000 handler_functions.py:5(handlers)
+       31    0.000    0.000    0.015    0.000 manager.py:181(__valid_pub_topic_name)
+       70    0.000    0.000    0.001    0.000 manager.py:184(__valid_sub_topic_name)
+       31    0.000    0.000    0.000    0.000 manager.py:187(__valid_pub_event_name)
+       70    0.000    0.000    0.001    0.000 manager.py:190(__valid_sub_event_name)
+       31    0.000    0.000    0.000    0.000 manager.py:193(__valid_event_len)
+       81    0.000    0.000    0.000    0.000 manager.py:198(__valid_topic_len)
+       81    0.000    0.000    0.000    0.000 manager.py:203(__lookup_event)
+       31    0.000    0.000    0.001    0.000 manager.py:206(__valid_pub_event)
+       70    0.000    0.000    0.001    0.000 manager.py:213(__valid_sub_event)
+       31    0.000    0.000    0.015    0.000 manager.py:221(__valid_pub_topic)
+       70    0.000    0.000    0.002    0.000 manager.py:227(__valid_sub_topic)
+       70    0.000    0.000    0.000    0.000 manager.py:238(__valid_event_handler)
+       70    0.000    0.000    0.000    0.000 manager.py:246(__valid_exception_handler)
+       31    0.000    0.000    0.006    0.000 manager.py:251(__inc_topic_stats)
+       31    0.000    0.000    0.006    0.000 manager.py:266(__inc_event_stats)
+        1    0.000    0.000    0.000    0.000 manager.py:277(__inc_event_handler_stats)
+        1    0.000    0.000    0.000    0.000 manager.py:299(__inc_subscription_stats)
+        2    0.000    0.000    0.010    0.005 manager.py:310(__draw_line)
+        1    0.004    0.004    0.016    0.016 manager.py:314(dump_sub_table)
+        1    0.000    0.000    0.001    0.001 manager.py:347(__dump_topic_stats)
+        1    0.000    0.000    0.001    0.001 manager.py:356(__dump_event_stats)
+        1    0.000    0.000    0.000    0.000 manager.py:365(__dump_event_handler_stats)
+        1    0.000    0.000    0.000    0.000 manager.py:374(__dump_exception_handler_stats)
+        1    0.000    0.000    0.000    0.000 manager.py:384(__dump_subscription_stats)
+        1    0.000    0.000    0.002    0.002 manager.py:393(dump_all_stats)
+       31    0.017    0.001    1.222    0.039 manager.py:400(publish)
+       70    0.003    0.000    0.016    0.000 manager.py:463(__sub_lookup)
+       70    0.055    0.001    0.067    0.001 manager.py:495(__update_lookup_table)
+       70    0.000    0.000    0.000    0.000 manager.py:500(<dictcomp>)
+       70    0.001    0.000    0.068    0.001 manager.py:513(__update_sub_table)
+       70    0.001    0.000    0.085    0.001 manager.py:533(__subscribe)
+       70    0.001    0.000    0.089    0.001 manager.py:545(subscribe)
+      239    0.001    0.000    0.001    0.000 posixpath.py:110(basename)
+      478    0.000    0.000    0.000    0.000 posixpath.py:43(normcase)
+      239    0.000    0.000    0.002    0.000 posixpath.py:95(splitext)
+      970    0.002    0.000    0.003    0.000 random.py:272(choice)
+      202    0.000    0.000    0.017    0.000 re.py:134(match)
+     3689    0.005    0.000    1.152    0.000 re.py:188(compile)
+     3891    0.033    0.000    1.162    0.000 re.py:226(_compile)
+       31    0.000    0.000    0.006    0.000 sre_compile.py:178(_compile_charset)
+       31    0.002    0.000    0.006    0.000 sre_compile.py:207(_optimize_charset)
+      187    0.000    0.000    0.000    0.000 sre_compile.py:24(_identityfunction)
+       31    0.003    0.000    0.003    0.000 sre_compile.py:258(_mk_bitmap)
+5053/3720    0.086    0.000    0.143    0.000 sre_compile.py:32(_compile)
+     1333    0.005    0.000    0.010    0.000 sre_compile.py:354(_simple)
+     3720    0.174    0.000    0.322    0.000 sre_compile.py:361(_compile_info)
+     7440    0.010    0.000    0.013    0.000 sre_compile.py:474(isstring)
+     3720    0.016    0.000    0.482    0.000 sre_compile.py:480(_code)
+     3720    0.029    0.000    1.113    0.000 sre_compile.py:495(compile)
+     5332    0.005    0.000    0.007    0.000 sre_parse.py:126(__len__)
+     7998    0.015    0.000    0.023    0.000 sre_parse.py:130(__getitem__)
+     1333    0.001    0.000    0.001    0.000 sre_parse.py:134(__setitem__)
+    48577    0.052    0.000    0.071    0.000 sre_parse.py:138(append)
+6386/5053    0.088    0.000    0.098    0.000 sre_parse.py:140(getwidth)
+     3720    0.007    0.000    0.020    0.000 sre_parse.py:178(__init__)
+    61381    0.133    0.000    0.169    0.000 sre_parse.py:182(__next)
+     5178    0.004    0.000    0.004    0.000 sre_parse.py:195(match)
+    57568    0.070    0.000    0.226    0.000 sre_parse.py:201(get)
+     3720    0.015    0.000    0.525    0.000 sre_parse.py:301(_parse_sub)
+     3720    0.172    0.000    0.503    0.000 sre_parse.py:379(_parse)
+     3720    0.027    0.000    0.587    0.000 sre_parse.py:663(parse)
+     3720    0.005    0.000    0.005    0.000 sre_parse.py:67(__init__)
+     5053    0.006    0.000    0.006    0.000 sre_parse.py:90(__init__)
+        1    0.013    0.013    1.348    1.348 stress_test.py:112(subscribe_and_publish)
+        2    0.000    0.000    0.005    0.002 stress_test.py:58(generate_topic)
+     1020    0.001    0.000    0.004    0.000 stress_test.py:62(<genexpr>)
+        1    0.000    0.000    0.000    0.000 stress_test.py:67(generate_event)
+        1    0.000    0.000    0.001    0.001 stress_test.py:96(generate_handler_functions)
+      239    0.001    0.000    0.002    0.000 threading.py:120(acquire)
+      239    0.001    0.000    0.002    0.000 threading.py:140(release)
+      478    0.000    0.000    0.000    0.000 threading.py:62(_note)
+      239    0.000    0.000    0.000    0.000 threading.py:681(name)
+      239    0.000    0.000    0.001    0.000 threading.py:825(currentThread)
+     3720    0.008    0.000    0.008    0.000 {_sre.compile}
+       70    0.000    0.000    0.000    0.000 {built-in method __new__ of type object at 0x45070e00}
+    10080    0.008    0.000    0.008    0.000 {getattr}
+     1096    0.001    0.000    0.001    0.000 {hasattr}
+    19636    0.015    0.000    0.015    0.000 {isinstance}
+197468/196135    0.067    0.000    0.068    0.000 {len}
+      373    0.000    0.000    0.000    0.000 {method 'acquire' of 'thread.lock' objects}
+   237558    0.083    0.000    0.083    0.000 {method 'append' of 'list' objects}
+       37    0.001    0.000    0.001    0.000 {method 'clear' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {method 'close' of 'file' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+      100    0.000    0.000    0.000    0.000 {method 'endswith' of 'str' objects}
+     6975    0.005    0.000    0.005    0.000 {method 'extend' of 'list' objects}
+      379    0.000    0.000    0.000    0.000 {method 'find' of 'str' objects}
+      239    0.003    0.000    0.003    0.000 {method 'flush' of 'file' objects}
+     4649    0.004    0.000    0.004    0.000 {method 'get' of 'dict' objects}
+     3861    0.002    0.000    0.002    0.000 {method 'items' of 'dict' objects}
+       70    0.001    0.000    0.005    0.000 {method 'join' of 'str' objects}
+       70    0.000    0.000    0.000    0.000 {method 'lower' of 'str' objects}
+      202    0.000    0.000    0.000    0.000 {method 'match' of '_sre.SRE_Pattern' objects}
+      970    0.000    0.000    0.000    0.000 {method 'random' of '_random.Random' objects}
+        2    0.009    0.005    0.009    0.005 {method 'read' of 'file' objects}
+      373    0.000    0.000    0.000    0.000 {method 'release' of 'thread.lock' objects}
+     3709    0.004    0.000    0.004    0.000 {method 'replace' of 'str' objects}
+      717    0.001    0.000    0.001    0.000 {method 'rfind' of 'str' objects}
+     3689    0.005    0.000    0.005    0.000 {method 'search' of '_sre.SRE_Pattern' objects}
+        2    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+      100    0.000    0.000    0.000    0.000 {method 'startswith' of 'str' objects}
+      290    0.001    0.000    0.001    0.000 {method 'write' of 'file' objects}
+    10106    0.010    0.000    0.010    0.000 {min}
+        1    0.000    0.000    0.000    0.000 {open}
+    47369    0.016    0.000    0.016    0.000 {ord}
+      239    0.000    0.000    0.000    0.000 {posix.getpid}
+        2    0.001    0.000    0.001    0.000 {posix.popen}
+      168    0.000    0.000    0.000    0.000 {range}
+      239    0.000    0.000    0.000    0.000 {sys._getframe}
+      956    0.000    0.000    0.000    0.000 {thread.get_ident}
+      239    0.003    0.000    0.003    0.000 {time.localtime}
+      239    0.001    0.000    0.001    0.000 {time.strftime}
+      239    0.000    0.000    0.000    0.000 {time.time}
+
+
+Done!! - check the logs for details! :)
+
+$ 
+$ 
+$ 
+
+__END__

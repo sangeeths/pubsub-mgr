@@ -1,0 +1,111 @@
+database_publisher.py  
+---------------------    
+The database start and stop events are published at
+Database::start() and Database::stop() methods respectively. 
+
+When published, the topic is the name of the instance, which
+could be one of the following:
+    #1 MongoDB
+    #2 Cassandra
+    #3 PostgreSQL
+    #4 Oracle
+
+The events could be one among the following:
+    #1 DatabaseStartEvent - for Database::start()
+    #2 DatabaseStopEvent  - for Database::stop()
+
+
+database_subscribers.py  
+-----------------------
+All subscriptions are done here. 
+
+The following are the event handlers for various events:
+    #1 DatabaseStartEvent
+        All_Database_All_events
+        All_Database_start_event
+        Cassandra_start_event 
+        MongoDB_start_event 
+        Oracle_start_event 
+        PostgreSQL_start_event 
+    #2 DatabaseStopEvent
+        All_Database_All_events
+        All_Database_stop_event
+        Cassandra_stop_event
+        MongoDB_stop_event
+        Oracle_stop_event
+        PostgreSQL_stop_event
+
+The following are the exception handlers:
+    #1 DatabaseStartEvent
+        All_Database_All_exceptions
+        All_Database_start_exception 
+        Cassandra_start_exception 
+        MongoDB_start_exception 
+        Oracle_start_exception 
+        PostgreSQL_start_exception
+    #2 DatabaseStopEvent
+        All_Database_All_exceptions
+        All_Database_stop_exception
+        Cassandra_stop_exception
+        MongoDB_stop_exception
+        Oracle_stop_exception 
+        PostgreSQL_stop_exception 
+
+The following are the Subscriptions:
+    Subscription(topic='Cassandra', event='DatabaseStopEvent', 
+                 event_handler=Cassandra_stop_event, 
+                 exception_handler=Cassandra_stop_exception) 
+    Subscription(topic='Cassandra', event='DatabaseStartEvent', 
+                 event_handler=Cassandra_start_event, 
+                 exception_handler=Cassandra_start_exception) 
+    Subscription(topic='MongoDB', event='DatabaseStopEvent', 
+                 event_handler=MongoDB_stop_event, 
+                 exception_handler=MongoDB_stop_exception) 
+    Subscription(topic='Oracle', event='DatabaseStartEvent', 
+                 event_handler=Oracle_start_event, 
+                 exception_handler=Oracle_start_exception) 
+    Subscription(topic='Oracle', event='DatabaseStopEvent', 
+                 event_handler=Oracle_stop_event, 
+                 exception_handler=Oracle_stop_exception) 
+    Subscription(topic='*', event='*', 
+                 event_handler=All_Database_All_events, 
+                 exception_handler=All_Database_All_exceptions) 
+    Subscription(topic='PostgreSQL', event='DatabaseStartEvent', 
+                 event_handler=PostgreSQL_start_event, 
+                 exception_handler=PostgreSQL_start_exception) 
+    Subscription(topic='*', event='DatabaseStartEvent', 
+                 event_handler=All_Database_start_event, 
+                 exception_handler=All_Database_start_exception) 
+    Subscription(topic='MongoDB', event='DatabaseStartEvent', 
+                 event_handler=MongoDB_start_event, 
+                 exception_handler=MongoDB_start_exception) 
+    Subscription(topic='*', event='DatabaseStopEvent', 
+                 event_handler=All_Database_stop_event, 
+                 exception_handler=All_Database_stop_exception) 
+    Subscription(topic='PostgreSQL', event='DatabaseStopEvent', 
+                 event_handler=PostgreSQL_stop_event, 
+                 exception_handler=PostgreSQL_stop_exception) 
+
+
+Demo:
+-----
+To see how publish and subscribe for database start and stop
+events work, please run "examples/database_subscribers.py" 
+as follows:
+
+$
+$ python database_subscribers.py 
+Done! - check logs for details :)
+
+$
+
+
+Logs:
+-----
+The logs are by default are written to "/tmp/EventManager.log".
+To view the logs, please run 'tail -f' command on the log file.
+
+$ tail -f /tmp/EventManager.log 
+
+
+__END__

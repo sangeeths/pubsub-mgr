@@ -154,5 +154,9 @@ def subscribe_and_publish(r, g):
 
 if __name__ == '__main__':
     cProfile.run("subscribe_and_publish(50, 20)")
+    print "Done!! - check the logs for details! :)"
+    print
+
+# __END__
 
 

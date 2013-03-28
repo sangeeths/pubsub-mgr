@@ -258,4 +258,7 @@ if __name__ == "__main__":
     em.dump_sub_table()
     em.dump_all_stats()
 
+    print "Done! - check logs for details :)"
+    print 
+
 # __END__
