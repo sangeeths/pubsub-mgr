@@ -139,6 +139,8 @@ class EventManager():
                     'AlarmTriggerEvent',
                     'AlarmUpdateEvent',
                     'ChangeOfValueEvent',
+                    'DatabaseStartEvent',
+                    'DatabaseStopEvent',
                     'DHCPAckEvent',
                     'DHCPDeclineEvent',
                     'DHCPDiscoverEvent',
@@ -327,8 +329,8 @@ class EventManager():
                          item.event_handler, "", item.exception_handler)  
             #final_str +=  self.__draw_line(style='.')
             final_str += "\n"
-        final_str += "\t\t\tS U B S C R I P T I O N   L O O K U P   T A B L E\n"
-        final_str += "\t\t\t-------------------------------------------------\n"
+        final_str += "\t\t\t\t\tS U B S C R I P T I O N   L O O K U P   T A B L E\n"
+        final_str += "\t\t\t\t\t-------------------------------------------------\n"
         for item in EventManager.__sub_tuple_columns:
             final_str +=  "%s \n" % item
             for k, v in EventManager.__sub_lookup_table[item].items():
@@ -344,8 +346,8 @@ class EventManager():
 
     def __dump_topic_stats(self):
         final_str = "\n"
-        final_str += "T O P I C\n"
-        final_str += "---------\n"
+        final_str += "T O P I C (stats)\n"
+        final_str += "-----------------\n"
         for topic, count in EventManager.__stats_topic.items():
             final_str += "%7d : %s \n" % (count, topic)
         final_str += "\n"
@@ -353,8 +355,8 @@ class EventManager():
 
     def __dump_event_stats(self):
         final_str = "\n"
-        final_str += "E V E N T\n"
-        final_str += "---------\n"
+        final_str += "E V E N T (stats)\n"
+        final_str += "-----------------\n"
         for event, count in EventManager.__stats_event.items():
             final_str += "%7d : %s \n" % (count, event)
         final_str += "\n"
@@ -362,8 +364,8 @@ class EventManager():
 
     def __dump_event_handler_stats(self):
         final_str = "\n"
-        final_str += "E V E N T  H A N D L E R\n"
-        final_str += "------------------------\n"
+        final_str += "E V E N T  H A N D L E R (stats)\n"
+        final_str += "--------------------------------\n"
         for event_handler, count in EventManager.__stats_event_handler.items():
             final_str += "%7d : %s \n" % (count, event_handler)
         final_str += "\n"
@@ -371,8 +373,8 @@ class EventManager():
 
     def __dump_exception_handler_stats(self):
         final_str = "\n"
-        final_str += "E X C E P T I O N  H A N D L E R\n"
-        final_str += "--------------------------------\n"
+        final_str += "E X C E P T I O N  H A N D L E R (stats)\n"
+        final_str += "----------------------------------------\n"
         for exception_handler, count in \
             EventManager.__stats_exception_handler.items():
             final_str += "%7d : %s \n" % (count, exception_handler)
@@ -461,6 +463,7 @@ class EventManager():
     def __sub_lookup(self, **kwargs):
         result = []             # lookup result
         first_iteration = 1     # flag for first iteration
+#        logging.debug("......................................................")
         for k, v in kwargs.items():
             if k not in EventManager.__sub_tuple_columns:
                 raise NameError('Invalid lookup argument: %s' % k)
@@ -474,9 +477,12 @@ class EventManager():
             if first_iteration: 
                 result = result_so_far
             else: 
-                list(set(result) & set(result_so_far))
+                result = list(set(result) & set(result_so_far))
             # after the very first iteration, unset first_iteration!
             if first_iteration: first_iteration = 0
+#            logging.debug("key = %s, result           = %s" % (k, result))
+#            logging.debug("key = %s, result_so_far    = %s" % (k, result_so_far))
+#            logging.debug("======================================================")
         logging.debug("lookup (%s) = %s" %(kwargs, result))
         return result if result else None
     # __sub_look : end
@@ -605,5 +611,32 @@ class EventManager():
         keywords = {'event_handler':event_handler}
         self.__unsubscribe_all(**keywords)
  
+
+if __name__ == '__main__':
+    def event_handler(topic, event, **kwargs):
+        print "I am an event handler."
+        print "     topic = %s" % topic
+        print "     event = %s" % event
+        print "     args  = %s" % kwargs
+
+    def exception_handler(e, topic, event, **kwargs):
+        print "I am an event handler."
+        print "     exception = %s" % e
+        print "     topic = %s" % topic
+        print "     event = %s" % event
+        print "     args  = %s" % kwargs
+
+    em = EventManager()
+    em.subscribe(topic='*', event='*', 
+                 event_handler=event_handler, 
+                 exception_handler=exception_handler)
+    
+    em.publish(topic="randomtopic", event="AlarmUpdateEvent")
+    em.publish(topic="topic", event="ServiceStopEvent",
+               arg1="argument1", arg2="argument2", arg3="argument3")
+
+    em.dump_sub_table()
+    em.dump_all_stats()
+
 # __END__
 
