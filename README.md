@@ -12,11 +12,6 @@ The `Event Manager` provides a centralized hub for `publishing` and `subscribing
  * `Producer` produces an `event` on a particular `topic` by calling `EventManager.publish(topic, event, arguments-to-the-event-handlers)`
  * `Consumer` subscribes to an `event` on a particular `topic` by calling `EventManager.subscribe(topic, event, event_handler, exception_handler)`. When the `event` occurs, the `event_handler` is called (or `exception_handler` whenever an exception occurs!)
 
-## Requirements 
-Latest `Python` (`>2.7` preferred)
-
-```sudo pip install enum```
-
 ## Features
  * `Produces` and `Consumers` are independent (IOW absolutely NO dependency) - The event manager works in a way where the `producer` need not be aware of the existence of the `subscribers` and the `subscribers` need not be aware of the existence of the `producers`. 
  * The communication (`publish` and `subscribe`) includes two components; #1 `topics` (higher level) #2 `events` (lower level). Read further down on `topics` and `events`.
