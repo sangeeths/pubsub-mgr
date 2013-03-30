@@ -1,5 +1,4 @@
 from collections import namedtuple, defaultdict
-from enum import Enum
 from itertools import chain
 from threading import Lock as Lock
 import logging
@@ -627,11 +626,15 @@ if __name__ == '__main__':
         print "     args  = %s" % kwargs
 
     em = EventManager()
+    print 'Subscribing: topic="*", event="*"'
     em.subscribe(topic='*', event='*', 
                  event_handler=event_handler, 
                  exception_handler=exception_handler)
     
+    print 'Publishing: topic="randomtopic", event="AlarmUpdateEvent"'
     em.publish(topic="randomtopic", event="AlarmUpdateEvent")
+
+    print 'Publishing: topic="topic", event="ServiceStopEvent"'
     em.publish(topic="topic", event="ServiceStopEvent",
                arg1="argument1", arg2="argument2", arg3="argument3")
 
